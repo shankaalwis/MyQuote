@@ -1,0 +1,55 @@
+<!-- app/views/layouts/_header.html.erb -->
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+  <div class="container-fluid">
+    <!-- Brand -->
+    <a class="navbar-brand" href="<%= root_path %>">MyQuote</a>
+
+    <!-- Mobile toggle -->
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#nav">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <!-- Collapsible menu -->
+    <div id="nav" class="collapse navbar-collapse">
+      <!-- Left side -->
+      <ul class="navbar-nav me-auto">
+        <li class="nav-item"><%= link_to 'Home', root_path, class: "nav-link" %></li>
+        <li class="nav-item"><%= link_to 'Search', search_path, class: "nav-link" %></li>
+
+        <% if logged_in? %>
+          <!-- User-only shortcuts -->
+          <li class="nav-item"><%= link_to 'My Quotes', quotes_path(q: 'mine'), class: "nav-link" %></li>
+          <li class="nav-item"><%= link_to 'Add Quote', new_quote_path, class: "nav-link" %></li>
+
+          <% if is_administrator? %>
+            <!-- Admin shortcuts -->
+            <li class="nav-item"><%= link_to 'Admin', admin_path, class: "nav-link" %></li>
+            <li class="nav-item"><%= link_to 'Users', users_path, class: "nav-link" %></li>
+            <li class="nav-item"><%= link_to 'Categories', categories_path, class: "nav-link" %></li>
+            <li class="nav-item"><%= link_to 'Philosophers', philosophers_path, class: "nav-link" %></li>
+          <% end %>
+        <% end %>
+      </ul>
+
+      <!-- Right side: auth -->
+      <ul class="navbar-nav">
+        <% if logged_in? %>
+          <!-- User dropdown -->
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">
+              <%= current_user.fname %> <%= current_user.lname %>
+            </a>
+            <ul class="dropdown-menu dropdown-menu-end">
+              <li><%= link_to 'Profile', current_user, class: "dropdown-item" %></li>
+              <li><%= button_to 'Sign Out', logout_path, method: :delete, class: 'dropdown-item' %></li>
+            </ul>
+          </li>
+        <% else %>
+          <!-- Links for guests -->
+          <li class="nav-item"><%= link_to 'Sign In', login_path, class: "nav-link" %></li>
+          <li class="nav-item"><%= link_to 'Sign Up', new_user_path, class: "nav-link" %></li>
+        <% end %>
+      </ul>
+    </div>
+  </div>
+</nav>

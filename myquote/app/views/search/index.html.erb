@@ -1,0 +1,36 @@
+<!-- app/views/search/index.html.erb -->
+<h1>Search Quotes by Category</h1>
+
+<!-- Search form -->
+<%= form_with url: search_path, method: :get, local: true, class: 'row g-2 my-3' do %>
+  <div class="col-auto">
+    <%= text_field_tag :q, params[:q], class: 'form-control', placeholder: 'e.g., Ethics' %>
+  </div>
+  <div class="col-auto">
+    <%= submit_tag 'Search', class: 'btn btn-primary' %>
+  </div>
+<% end %>
+
+<!-- Results -->
+<% if params[:q].present? %>
+  <h3>Results for “<%= params[:q] %>”</h3>
+  <ul class="list-group">
+    <% @quotes.each do |q| %>
+      <li class="list-group-item">
+        “<%= q.quote_text %>”
+        <div class="small text-muted">
+          — <%= [q.philosopher&.first_name, q.philosopher&.last_name].compact.join(' ').presence || 'Anonymous' %>
+          <% if q.philosopher&.birth_year.present? %>
+            (<%= q.philosopher.birth_year %><%= q.philosopher.death_year ? "–#{q.philosopher.death_year}" : '' %>)
+          <% end %>
+          · added by <strong><%= q.user.fname %></strong>
+          <% if q.publication_year.present? %> · <%= q.publication_year %><% end %>
+          <% if q.categories.any? %> · <%= q.categories.map(&:name).join(', ') %><% end %>
+        </div>
+      </li>
+    <% end %>
+    <% if @quotes.empty? %>
+      <li class="list-group-item">No matches.</li>
+    <% end %>
+  </ul>
+<% end %>

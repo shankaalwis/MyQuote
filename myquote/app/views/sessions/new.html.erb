@@ -1,0 +1,15 @@
+<!-- app/views/sessions/new.html.erb -->
+<h1>Sign In</h1>
+<%= form_with url: login_path, method: :post, local: true, class: "mt-3" do %>
+  <!-- Email -->
+  <div class="mb-3">
+    <label class="form-label">Email</label>
+    <%= email_field_tag :email, nil, class: "form-control", required: true %>
+  </div>
+  <!-- Password -->
+  <div class="mb-3">
+    <label class="form-label">Password</label>
+    <%= password_field_tag :password, nil, class: "form-control", required: true %>
+  </div>
+  <%= submit_tag "Sign In", class: "btn btn-primary" %>
+<% end %>

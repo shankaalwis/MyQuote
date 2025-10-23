@@ -1,0 +1,30 @@
+<!-- app/views/home/aindex.html.erb -->
+<h1 class="mb-4">Admin Dashboard</h1>
+
+<div class="row g-3 mb-4">
+  <div class="col-md-3"><div class="card p-3">Users: <strong><%= User.count %></strong></div></div>
+  <div class="col-md-3"><div class="card p-3">Quotes: <strong><%= Quote.count %></strong></div></div>
+  <div class="col-md-3"><div class="card p-3">Categories: <strong><%= Category.count %></strong></div></div>
+  <div class="col-md-3"><div class="card p-3">Philosophers: <strong><%= Philosopher.count %></strong></div></div>
+</div>
+
+<h3 class="mt-4 mb-3">Latest Public Quotes (Top 10)</h3>
+<ul class="list-group">
+  <% Quote.includes(:user, :philosopher, :categories)
+          .where(is_public: true)
+          .order(created_at: :desc)
+          .limit(10).each do |q| %>
+    <li class="list-group-item">
+      “<%= q.quote_text %>”
+      <div class="small text-muted">
+        — <%= [q.philosopher&.first_name, q.philosopher&.last_name].compact.join(' ').presence || 'Anonymous' %>
+        <% if q.philosopher&.birth_year.present? %>
+          (<%= q.philosopher.birth_year %><%= q.philosopher.death_year ? "–#{q.philosopher.death_year}" : '' %>)
+        <% end %>
+        · added by <strong><%= q.user.fname %></strong>
+        <% if q.publication_year.present? %> · <%= q.publication_year %><% end %>
+        <% if q.categories.any? %> · <%= q.categories.map(&:name).join(', ') %><% end %>
+      </div>
+    </li>
+  <% end %>
+</ul>

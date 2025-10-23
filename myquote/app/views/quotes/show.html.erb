@@ -1,0 +1,36 @@
+<!-- app/views/quotes/show.html.erb -->
+<!-- Quote content -->
+<p class="lead">“<%= @quote.quote_text %>”</p>
+
+<!-- Source line with lifespan -->
+<p>
+  <strong>Source:</strong>
+  <%= [@quote.philosopher&.first_name, @quote.philosopher&.last_name].compact.join(' ').presence || 'Anonymous' %>
+  <% if @quote.philosopher&.birth_year.present? %>
+    (<%= @quote.philosopher.birth_year %><%= @quote.philosopher.death_year ? "–#{@quote.philosopher.death_year}" : '' %>)
+  <% end %>
+</p>
+
+<!-- Short bio if available -->
+<% if @quote.philosopher&.biography.present? %>
+  <p><em><%= @quote.philosopher.biography %></em></p>
+<% end %>
+
+<!-- Required display fields -->
+<p><strong>Owner:</strong> <%= @quote.user.fname %></p>
+<% if @quote.publication_year.present? %>
+  <p><strong>Publication year:</strong> <%= @quote.publication_year %></p>
+<% end %>
+<p><strong>Categories:</strong> <%= @quote.categories.map(&:name).join(', ') %></p>
+<% if @quote.owner_comment.present? %>
+  <p><strong>Owner’s comment:</strong> <%= @quote.owner_comment %></p>
+<% end %>
+
+<!-- Owner or admin controls -->
+<% if logged_in? && (is_administrator? || @quote.user_id == current_user.id) %>
+  <%= link_to 'Edit', edit_quote_path(@quote), class: 'btn btn-secondary' %>
+  <%= button_to 'Delete', @quote, method: :delete, class: 'btn btn-danger', data: { confirm: 'Are you sure?' } %>
+<% end %>
+
+<!-- Back link (fallback to list) -->
+<%= link_to 'Back', request.referer.presence || quotes_path, class: 'btn btn-link' %>

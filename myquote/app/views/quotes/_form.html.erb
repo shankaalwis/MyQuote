@@ -1,0 +1,52 @@
+<!-- app/views/quotes/_form.html.erb -->
+<%= form_with(model: quote, local: true) do |f| %>
+  <!-- Show validation errors -->
+  <% if quote.errors.any? %>
+    <div class="alert alert-danger">
+      <ul><% quote.errors.full_messages.each { |m| concat content_tag(:li, m) } %></ul>
+    </div>
+  <% end %>
+
+  <!-- Quote text -->
+  <div class="mb-3">
+    <%= f.label :quote_text, class: 'form-label' %>
+    <%= f.text_area :quote_text, rows: 5, class: 'form-control', required: true %>
+  </div>
+
+  <div class="row g-3">
+    <!-- Philosopher dropdown (blank = Anonymous/Unknown) -->
+    <div class="col-md-6">
+      <%= f.label :philosopher_id, 'Philosopher', class: 'form-label' %>
+      <%= f.select :philosopher_id, options_for_select(@philosophers, f.object.philosopher_id),
+                   { include_blank: 'Anonymous/Unknown' }, class: 'form-select' %>
+    </div>
+
+    <!-- Publication year (optional) -->
+    <div class="col-md-3">
+      <%= f.label :publication_year, class: 'form-label' %>
+      <%= f.number_field :publication_year, class: 'form-control' %>
+    </div>
+
+    <!-- Public/private toggle -->
+    <div class="col-md-3 form-check form-switch">
+      <%= f.check_box :is_public, class: 'form-check-input' %>
+      <%= f.label :is_public, 'Public?', class: 'form-check-label' %>
+    </div>
+  </div>
+
+  <!-- Categories multi-select (at least one required) -->
+  <div class="mb-3">
+    <%= f.label :category_ids, 'Categories', class: 'form-label' %>
+    <%= f.select :category_ids, options_for_select(@categories, f.object.category_ids),
+                 {}, multiple: true, class: 'form-select', size: 6 %>
+    <div class="form-text">Hold Ctrl/Cmd to select multiple.</div>
+  </div>
+
+  <!-- Optional owner comment -->
+  <div class="mb-3">
+    <%= f.label :owner_comment, 'Your comment (optional)', class: 'form-label' %>
+    <%= f.text_area :owner_comment, rows: 3, class: 'form-control' %>
+  </div>
+
+  <%= f.submit class: 'btn btn-primary' %>
+<% end %>
